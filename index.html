@@ -158,7 +158,57 @@
   </style>
 </head>
 <body>
-<!-- Seluruh isi body tetap seperti versi sebelumnya termasuk semua motor dan script -->
-<!-- Jika kamu ingin saya tambahkan kembali seluruh bagian body dan isi produk, saya bisa lengkapi sekarang juga -->
+  <header>
+    <img src="Raharjo.jpg" alt="Logo Raharjo Motor" class="logo" />
+    <h1>Raharjo Motor – Motor Bekas Terpercaya Tuban</h1>
+    <p>"Jaminan Mesin Mulus, Kelistrikan Aman dan Siap Jalan"</p>
+  </header>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Cari motor berdasarkan nama..." oninput="filterCards()" />
+    <select id="priceFilter" onchange="filterCards()">
+      <option value="">Filter Harga</option>
+      <option value="6000000">Di bawah 6 juta</option>
+      <option value="10000000">6–10 juta</option>
+      <option value="15000000">10–15 juta</option>
+    </select>
+  </div>
+  <div class="gallery" id="motorGallery">
+    <!-- Tempel semua card motor di sini sesuai yang kamu punya -->
+  </div>
+  <div class="form-section">
+    <h2>Pesan Sekarang via WhatsApp</h2>
+    <input type="text" id="namaPemesan" placeholder="Nama Anda" />
+    <input type="text" id="motorDipilih" placeholder="Motor yang diinginkan" />
+    <a id="btnPesan" href="#" onclick="kirimPesan()">Kirim Pesan</a>
+  </div>
+  <footer>
+    &copy; 2025 Raharjo Motor – Tuban dan Sekitarnya
+  </footer>
+  <script>
+    function filterCards() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const price = document.getElementById('priceFilter').value;
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const harga = parseInt(card.dataset.price);
+        const cocokNama = name.includes(search);
+        const cocokHarga = !price || harga <= parseInt(price);
+        card.style.display = (cocokNama && cocokHarga) ? 'block' : 'none';
+      });
+    }
+    function kirimPesan() {
+      const nama = document.getElementById('namaPemesan').value;
+      const motor = document.getElementById('motorDipilih').value;
+      const noWA = '628819370113';
+      if (!nama || !motor) {
+        alert('Isi nama dan motor dulu ya!');
+        return;
+      }
+      const pesan = `Halo, saya ${nama}. Saya tertarik dengan motor ${motor}. Bisa info lebih lanjut?`;
+      const url = `https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`;
+      window.open(url, '_blank');
+    }
+  </script>
 </body>
 </html>
