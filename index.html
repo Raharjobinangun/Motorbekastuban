@@ -1,27 +1,277 @@
-<script>
-  function filterCards() {
-    const search = document.getElementById('search').value.toLowerCase();
-    const price = document.getElementById('priceFilter').value;
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-      const name = card.dataset.name.toLowerCase();
-      const harga = parseInt(card.dataset.price);
-      const cocokNama = name.includes(search);
-      const cocokHarga = !price || harga <= parseInt(price);
-      card.style.display = (cocokNama && cocokHarga) ? 'block' : 'none';
-    });
-  }
-
-  function kirimPesan() {
-    const nama = document.getElementById('namaPemesan').value;
-    const motor = document.getElementById('motorDipilih').value;
-    const noWA = '6289659833666'; // GANTI KE NOMOR BARU
-    if (!nama || !motor) {
-      alert('Isi nama dan motor dulu ya!');
-      return;
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google-site-verification" content="1_6F78r1iWWAAa_DFOiHEGwdSGjY8f0WyITRN77rYmY" />
+  <meta name="description" content="Raharjo Motor Tuban - Jual beli dan tukar tambah motor bekas kondisi siap jalan. Bisa COD & pesan lewat WA.">
+  <meta property="og:title" content="Raharjo Motor Tuban" />
+  <meta property="og:description" content="Jual beli motor bekas Tuban. Jaminan mesin mulus, surat lengkap. Bisa pesan lewat WA atau COD langsung." />
+  <meta property="og:url" content="https://raharjobinangun.github.io/Motorbekastuban/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://raharjobinangun.github.io/Motorbekastuban/Raharjo.jpg" />
+  <title>Raharjo Motor Tuban</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #111;
+      color: #fff;
     }
-    const pesan = `Halo, saya ${nama}. Saya tertarik dengan motor ${motor}. Bisa info lebih lanjut?`;
-    const url = `https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`;
-    window.open(url, '_blank');
-  }
-</script>
+    header {
+      background-color: #000;
+      padding: 20px 10px;
+      text-align: center;
+      border-bottom: 3px solid gold;
+    }
+    .logo {
+      width: 80px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    header h1 {
+      color: gold;
+      font-size: 22px;
+      margin: 10px 0 5px;
+    }
+    header p {
+      font-size: 14px;
+      color: #ccc;
+      margin: 0;
+    }
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 15px 20px;
+    }
+    .controls input,
+    .controls select {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .card {
+      background-color: #222;
+      border: 1px solid #444;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card-content {
+      padding: 15px;
+    }
+    .card-content h3 {
+      color: gold;
+      margin: 0 0 10px 0;
+      font-size: 18px;
+    }
+    .card-content p {
+      font-size: 14px;
+      color: #ccc;
+    }
+    .wa-number {
+      font-size: 14px;
+      margin: 8px 0 5px;
+      color: #0f0;
+      font-weight: bold;
+    }
+    .wa-btn {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 10px 15px;
+      font-size: 14px;
+      color: #000;
+      background-color: gold;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .form-section {
+      padding: 20px;
+      background-color: #1a1a1a;
+      text-align: center;
+    }
+    .form-section h2 {
+      color: gold;
+      margin-bottom: 10px;
+    }
+    .form-section input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+    }
+    .form-section a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: gold;
+      color: #000;
+      font-weight: bold;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #888;
+      font-size: 14px;
+    }
+    @media screen and (max-width: 480px) {
+      header h1 {
+        font-size: 18px;
+      }
+      .card-content h3 {
+        font-size: 16px;
+      }
+      .wa-btn {
+        font-size: 13px;
+        padding: 8px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="Raharjo.jpg" alt="Logo Raharjo Motor" class="logo" />
+    <h1>Raharjo Motor – Motor Bekas Terpercaya Tuban</h1>
+    <p>"Jaminan Mesin Mulus, Kelistrikan Aman dan Siap Jalan"</p>
+  </header>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Cari motor berdasarkan nama..." oninput="filterCards()" />
+    <select id="priceFilter" onchange="filterCards()">
+      <option value="">Filter Harga</option>
+      <option value="6000000">Di bawah 6 juta</option>
+      <option value="10000000">6–10 juta</option>
+      <option value="15000000">10–15 juta</option>
+    </select>
+  </div>
+   <div class="gallery" id="motorGallery">
+    <div class="card" data-name="Verza 2019" data-price="12700000">
+      <img src="Verza2019.jpg" alt="Honda Verza 2019" />
+      <div class="card-content">
+        <h3>Honda Verza 2019</h3>
+        <p>Plat Tuban, surat komplit, pajek urip. Rega: Rp12.700.000</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+    <div class="card" data-name="Mio J 2014" data-price="5500000">
+      <img src="Mio2014.jpg" alt="Yamaha Mio J 2014" />
+      <div class="card-content">
+        <h3>Yamaha Mio J 2014</h3>
+        <p>Plat Tuban, surat lengkap, pajek mati. Rega: Rp5.500.000</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+    <div class="card" data-name="Supra X 125" data-price="6500000">
+      <img src="Suprasusu.jpg" alt="Supra X 125" />
+      <div class="card-content">
+        <h3>Honda Supra X 125</h3>
+        <p>Harga nego, surat lengkap</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+    <div class="card" data-name="Supra 2009" data-price="5800000">
+      <img src="Supraenak.jpg" alt="Supra 2009" />
+      <div class="card-content">
+        <h3>Honda Supra 2009</h3>
+        <p>Mesin halus, surat lengkap</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+    <div class="card" data-name="Blade 2012" data-price="6000000">
+      <img src="Blade2012.jpg" alt="Blade 2012" />
+      <div class="card-content">
+        <h3>Honda Blade 2012</h3>
+        <p>Kondisi siap pakai</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+    <div class="card" data-name="Astrea Prima" data-price="6700000">
+      <img src="Primajos.jpg" alt="Astrea Prima" />
+      <div class="card-content">
+        <h3>Honda Astrea Prima</h3>
+        <p>Motor klasik, surat lengkap</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+    <div class="card" data-name="Vario 2012" data-price="6500000">
+      <img src="Vario2012.jpg" alt="Vario 2012" />
+      <div class="card-content">
+        <h3>Honda Vario 2012</h3>
+        <p>Harga Rp6.500.000, siap jalan</p>
+        <div class="wa-number">WA: 0896-5983-3666</div>
+        <a class="wa-btn" href="https://wa.me/6289659833666">Hubungi Kami</a>
+      </div>
+    </div>
+  </div>
+  <div class="form-section">
+    <h2>Pesan Sekarang via WhatsApp</h2>
+    <input type="text" id="namaPemesan" placeholder="Nama Anda" />
+    <input type="text" id="motorDipilih" placeholder="Motor yang diinginkan" />
+    <a id="btnPesan" href="#" onclick="kirimPesan()">Kirim Pesan</a>
+  </div>
+  <footer>
+    &copy; 2025 Raharjo Motor – Tuban dan Sekitarnya
+  </footer>
+  <script>
+    function filterCards() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const price = document.getElementById('priceFilter').value;
+      const cards = document.querySelectorAll('.card');
+      cards.forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const harga = parseInt(card.dataset.price);
+        const cocokNama = name.includes(search);
+        const cocokHarga = !price || harga <= parseInt(price);
+        card.style.display = (cocokNama && cocokHarga) ? 'block' : 'none';
+      });
+    }
+    function kirimPesan() {
+      const nama = document.getElementById('namaPemesan').value;
+      const motor = document.getElementById('motorDipilih').value;
+      const noWA = '6289659833666';
+      if (!nama || !motor) {
+        alert('Isi nama dan motor dulu ya!');
+        return;
+      }
+      const pesan = `Halo, saya ${nama}. Saya tertarik dengan motor ${motor}. Bisa info lebih lanjut?`;
+      const url = `https://wa.me/${noWA}?text=${encodeURIComponent(pesan)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
+
